@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ExperienceCenterApp } from './ExperienceCenterApp';
-import "bootswatch/dist/sketchy/bootstrap.min.css";
+import "bootswatch/dist/cosmo/bootstrap.min.css";
 
 
 ReactDOM.render(

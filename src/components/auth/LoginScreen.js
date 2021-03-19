@@ -17,17 +17,16 @@ export const LoginScreen = () => {
     const [formValues, handleInputChange] = useForm({
         email: 'centro_experiencia_2021@hotmail.com',
         password: '1234567',
-        username: 'Centro Experiencia'
     })
 
-    const { email, password, username } = formValues;
+    const { email, password } = formValues;
 
     const handleLogin = (e) => {
         e.preventDefault();
 
         if (isFormValid()) {
 
-            dispatch(startLoginWithEmailPasswordName(email, password, username))
+            dispatch(startLoginWithEmailPasswordName(email, password))
         }
     }
 
@@ -37,9 +36,6 @@ export const LoginScreen = () => {
             return false;
         } else if (password.length < 5) {
             dispatch(setError('Contraseña invalida'))
-            return false;
-        } else if (username.length < 3) {
-            dispatch(setError('Usuario invalido'))
             return false;
         }
 
@@ -61,10 +57,9 @@ export const LoginScreen = () => {
 
                                 {
                                     (msgError) &&
-                                    (<span class="badge badge-danger w-100 mb-2">{msgError}</span>)
+                                    (<span className="badge badge-danger w-100 mb-2">{msgError}</span>)
 
                                 }
-
 
                                 <form >
                                     <div className="form-group">
@@ -90,17 +85,6 @@ export const LoginScreen = () => {
 
                                     </div>
 
-                                    <div className="form-group">
-
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="username"
-                                            placeholder="Nombre de Usuario"
-                                            value={username}
-                                            onChange={handleInputChange} />
-
-                                    </div>
                                     <button type="button" className="btn btn-dark w-100" onClick={handleLogin}>login</button>
                                 </form>
                             </div>

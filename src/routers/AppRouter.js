@@ -1,30 +1,55 @@
-import React from 'react'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+
+import { login } from '../actions/auth'
+import { startLoadingLentes } from '../actions/lentes'
 import { LoginScreen } from '../components/auth/LoginScreen'
-import { DashBoard } from '../components/dashboard/DashBoard'
+import { DashBoardRoutes } from './DashBoardRoutes'
+
+import { PublicRoute } from '../routers/PublicRoute'
+import { PrivateRoute } from '../routers/PrivateRoute'
+
+import { firebase } from '../firebase/fierabse-config'
 
 export const AppRouter = () => {
 
-    //const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const dispatch = useDispatch();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user?.uid) {
+                dispatch(login(user.uid, user.displayName));
+                setIsLoggedIn(true);
+
+                dispatch(startLoadingLentes(user.uid))
+
+            } else {
+                setIsLoggedIn(false);
+            }
+        })
+
+    }, [dispatch])
 
     return (
         <Router>
             <div>
                 <Switch>
-                    {/* <PublicRoute
-                        path="/auth"
-                        component={AuthRouter}
-                        isAutenticated={isLoggedIn}
-                    />
-                    <PrivateRoute
+
+                    <PublicRoute
                         exact
+                        path="/login"
+                        isAutenticated={isLoggedIn}
+                        component={LoginScreen}
+                    />
+
+                    <PrivateRoute
                         path="/"
                         isAutenticated={isLoggedIn}
-                        component={DashBoardScreen}
-                    /> */}
-
-                    <Route path="/login" component={LoginScreen} />
-                    <Route exact path="/" component={DashBoard} />
+                        component={DashBoardRoutes}
+                    />
 
                     <Redirect to="/login" />
                 </Switch>
