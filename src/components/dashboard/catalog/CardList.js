@@ -11,7 +11,7 @@ export const CardList = () => {
 
     return (
         <div>
-            <div className="row row-cols-1 row-cols-sm-4">
+            <div className="row row-cols-1 row-cols-sm-3">
 
                 {
                     lentes.map(lente => (

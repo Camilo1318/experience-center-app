@@ -5,7 +5,7 @@ export const CardItem = ({ title, description, precio }) => {
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 250 }}>
+                <div className="card text-center shadow border-light" style={{ minWidth: 230, maxWidth: 250 }}>
                     <h6 className="card-header">{title}</h6>
                     <img src="https://i.ibb.co/WDC80yX/Screenshot-1.png" className="card-img-top mx-auto d-block mt-3" style={{ width: 120 }} />
                     <div className="card-body">
@@ -28,7 +28,7 @@ export const CardItem = ({ title, description, precio }) => {
                                 <h6>Precio : </h6>
                             </div>
                             <div className="col">
-                                <label className="control-label"> <strong>$</strong> {precio}</label>
+                                <p className="control-label"> <strong>$</strong> {precio}</p>
                             </div>
                         </div>
                     </div>

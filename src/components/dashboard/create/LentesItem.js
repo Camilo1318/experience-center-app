@@ -33,6 +33,11 @@ export const LentesItem = ({ id, title, description, precio, index }) => {
                         onClick={() => handleDeleteLente(id)}
 
                     >Eliminar</button></td>
+                    <td><button
+                        className="btn btn-info"
+                        onClick={() => handleDeleteLente(id)}
+
+                    >Editar</button></td>
 
                 </tr>
             </tbody>

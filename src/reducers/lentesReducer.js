@@ -9,6 +9,13 @@ const initialState = {
 export const lentesReducer = (state = initialState, action) => {
     switch (action.type) {
 
+        case types.lentesDesactive:
+
+            return {
+                ...state,
+                active: null
+            }
+
         case types.lentesActive:
 
             return {
@@ -26,6 +33,12 @@ export const lentesReducer = (state = initialState, action) => {
             }
 
 
+        case types.lentesFileUrl:
+
+            return {
+                ...state,
+
+            }
         default:
             return state;
     }

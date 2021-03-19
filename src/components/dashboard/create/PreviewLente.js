@@ -1,23 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 
-export const PreviewLente = ({ title, precio, File }) => {
+export const PreviewLente = ({ fileImage, fileMarca }) => {
 
-    const { lentes: note } = useSelector(state => state.lentes)
+    const { active } = useSelector(state => state.lentes)
+    const { title, description, precio } = active
 
-    const [preview, setPreview] = useState(null);
+    const [previewLente, setPreviewLente] = useState(null);
+    const [previewMarca, setPreviewMarca] = useState(null);
 
     useEffect(() => {
-        if (File) {
+        if (fileImage) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreview(reader.result);
+                setPreviewLente(reader.result);
             };
-            reader.readAsDataURL(File)
+            reader.readAsDataURL(fileImage)
         } else {
-            setPreview(null)
+            setPreviewLente(null)
         }
-    }, [File]);
+    }, [fileImage]);
+
+    useEffect(() => {
+        if (fileMarca) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewMarca(reader.result);
+            };
+            reader.readAsDataURL(fileMarca)
+        } else {
+            setPreviewMarca(null)
+        }
+    }, [fileMarca]);
+
 
     return (
         <>
@@ -25,26 +40,21 @@ export const PreviewLente = ({ title, precio, File }) => {
                 <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 250 }}>
                     <h6 className="card-header"><strong>{title}</strong></h6>
                     <h2>{ }</h2>
-                    {
-                        (preview)
-                            ? (
-                                <img src={preview}
-                                    className="card-img-top mx-auto d-block mt-3"
-                                    style={{ width: 120 }} />
-                            )
-                            : (
-                                <img src="https://i.ibb.co/WDC80yX/Screenshot-1.png"
-                                    className="card-img-top mx-auto d-block mt-3"
-                                    style={{ width: 120 }} />
-                            )
-                    }
 
+                    {/* Condicion pregunta por id =! 'id_temp' muestra url si no previewLente */}
+                    <img src={previewLente}
+                        className="card-img-top mx-auto d-block mt-2"
+                        style={{ width: 120 }} />
+
+                    <img src={previewMarca}
+                        className="card-img-top mx-auto d-block mt-2"
+                        style={{ width: 120 }}
+                    />
 
                     <div className="card-body">
-                        <img src="https://i.ibb.co/7GcYX9R/Screenshot-2.png" alt="BlueSafe" className="img-fluid" />
 
                         <div className="list-group bg-light border-light">
-                            <span className="card-text"> { }</span>
+                            <span className="card-text"> {description}</span>
                             <span className="card-text"> Calidad Optica</span>
                             <span className="card-text"> Resistencia</span>
                             <span className="card-text"> Super Hidrofóbico</span>

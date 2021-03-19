@@ -68,6 +68,10 @@ export const activeLente = (id, newLente) => ({
     }
 })
 
+export const desactiveLente = () => ({
+    type: types.lentesDesactive
+})
+
 export const setLentes = (lentes) => ({
 
     type: types.lentesLoad,
@@ -75,5 +79,6 @@ export const setLentes = (lentes) => ({
 });
 
 export const UpdateUrlImage = (url) => ({
-    type: types.lentesFileUrl
+    type: types.lentesFileUrl,
+
 })

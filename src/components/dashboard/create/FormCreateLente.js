@@ -1,16 +1,22 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
-import { startAddNewLente, startUploadImageFirebase } from '../../../actions/lentes';
+import { activeLente, startAddNewLente, startUploadImageFirebase } from '../../../actions/lentes';
 import { removeError, setError } from '../../../actions/ui';
 import useForm from '../../../hooks/useForm';
 import { PreviewLente } from './PreviewLente';
+import { PreviewLenteNothing } from './PreviewLenteNothing';
 
 export const FormCreateLente = () => {
 
+    const { active } = useSelector(state => state.lentes)
+
     const dispatch = useDispatch();
 
-    const [File, setFile] = useState('');
+    const [fileImage, setFileImage] = useState('');
+
+    const [fileMarca, setFileMarca] = useState('');
+
 
     const { msgError } = useSelector(state => state.ui)
 
@@ -25,8 +31,8 @@ export const FormCreateLente = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isFormValid()) {
+            dispatch(startUploadImageFirebase(fileImage));
             dispatch(startAddNewLente(formValues));
-            dispatch(startUploadImageFirebase(File))
         } else {
             console.log('Formulario invalido')
         }
@@ -42,7 +48,7 @@ export const FormCreateLente = () => {
         } else if (description.length < 5) {
             dispatch(setError('descripcion invalida'))
             return false;
-        } else if (!File) {
+        } else if (!fileImage || !fileMarca) {
             dispatch(setError('Debe cargar una imagen valida'));
             return false;
         }
@@ -51,86 +57,145 @@ export const FormCreateLente = () => {
         return true;
     }
 
-    const handleFileChange = (e) => {
+    const handlePreview = (e) => {
+
+        if (isFormValid()) {
+            dispatch(activeLente('id_temp', formValues))
+        }
+    }
+
+    const handleFileImageChange = (e) => {
 
         if (e.target.files[0]) {
             const file = e.target.files[0];
-            setFile(file);
+            setFileImage(file);
         } else {
-            setFile(null)
+            setFileImage(null)
+        }
+    }
+
+    const handleFileMarcaChange = (e) => {
+
+        if (e.target.files[0]) {
+            const file = e.target.files[0];
+            setFileMarca(file);
+        } else {
+            setFileMarca(null)
         }
     }
 
     return (
         <>
-            <div className="card">
-                <div className="card-body">
+            <div className="row p-4">
+                <div className="col-6">
 
-                    {
-                        (msgError) &&
-                        (<span className="badge badge-danger w-100 mb-2">{msgError}</span>)
-                    }
+                    <div className="row justify-content-center my-2">
+                        <div className="col-auto">
+                            <div className="card">
+                                <div className="card-body">
 
-                    <form onSubmit={handleSubmit} >
-                        <h3 className="text-center p-2">Añadir Lente</h3>
-                        <div className="form-group mx-auto w-75">
-                            <input
-                                type="text"
-                                className="form-control mb-3"
-                                placeholder="Titulo"
-                                name="title"
-                                value={title}
-                                onChange={handleInputChange}
-                            />
+                                    {
+                                        (msgError) &&
+                                        (<span className="badge badge-danger w-100 mb-2">{msgError}</span>)
+                                    }
 
-                            <input
-                                type="text"
-                                className="form-control mb-3"
-                                placeholder="Precio"
-                                name="precio"
-                                value={precio}
-                                onChange={handleInputChange}
-                            />
+                                    <form onSubmit={handleSubmit} >
+                                        <h4 className="text-center p-2">Añadir Lente</h4>
+                                        <div className="form-group mx-auto w-100">
+                                            <input
+                                                type="text"
+                                                className="form-control mb-3"
+                                                placeholder="Titulo"
+                                                name="title"
+                                                value={title}
+                                                onChange={handleInputChange}
+                                            />
 
-                            <input
+                                            <input
+                                                type="text"
+                                                className="form-control mb-3"
+                                                placeholder="Precio"
+                                                name="precio"
+                                                value={precio}
+                                                onChange={handleInputChange}
+                                            />
+                                            <p>Imagen Lente: </p>
+                                            <input
 
-                                className="form-control form-control-sm mb-3"
-                                type="file"
-                                id="formFile"
-                                onChange={handleFileChange}
-                                accept=".jpg, .jpeg, .png"
-                            />
+                                                className="form-control form-control-sm mb-3"
+                                                type="file"
+                                                id="formFile"
+                                                onChange={handleFileImageChange}
+                                                accept=".jpg, .jpeg, .png"
+                                            />
+                                            <p>Imagen Marca: </p>
+                                            <input
 
-                            <div className="input-group mb-3">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Caracteristicas"
-                                    name="description"
-                                    value={description}
-                                    onChange={handleInputChange}
+                                                className="form-control form-control-sm mb-3"
+                                                type="file"
+                                                id="formFile"
+                                                onChange={handleFileMarcaChange}
+                                                accept=".jpg, .jpeg, .png"
+                                            />
 
-                                />
+                                            <div className="input-group mb-3">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Caracteristicas"
+                                                    name="description"
+                                                    value={description}
+                                                    onChange={handleInputChange}
+
+                                                />
+
+                                            </div>
+
+                                            <span
+                                                className="btn btn-primary d-block w-100 mb-2 mx-auto"
+                                                onClick={handlePreview}
+                                            > Vista Previa </span>
+                                            <button className="btn btn-primary d-block w-100 mx-auto"> Añadir </button>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div >
+                </div>
+
+
+                <div className="col-6">
+
+
+                    <div className="row justify-content-center my-2">
+                        <div className="col-auto">
+
+                            <div className="card p-3">
+                                <h4 className="text-center p-2">Vista Previa</h4>
+
+                                {
+                                    (active)
+                                        ? (<PreviewLente {...{ ...formValues, fileImage, fileMarca }} />)
+                                        : (<PreviewLenteNothing />)
+                                }
+
 
                             </div>
 
-                            <button type="submit" className="btn btn-primary d-block w-100"> Añadir </button>
+
 
                         </div>
-                    </form>
-                </div>
-            </div>
-
-            <div className="row justify-content-center my-2">
-                <div className="col-auto">
-
-                    <h3 className="text-center p-2">Vista Previa</h3>
-
-                    <PreviewLente {...{ ...formValues, File }} />
+                    </div>
 
 
                 </div>
+
             </div>
+
+
         </>
     )
 }

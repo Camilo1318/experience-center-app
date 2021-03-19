@@ -11,6 +11,7 @@ export const types = {
     // Lentes Reducer
     lentesAdd: '[Lentes] Add Lente',
     lentesActive: '[Lentes] Set active lente',
+    lentesDesactive: '[Lentes] Desactive lente',
     lentesLoad: '[Lentes] Load Lentes',
     lentesUpdate: '[Lentes] Update Lente',
     lentesFileUrl: '[Lentes] Update image url',
