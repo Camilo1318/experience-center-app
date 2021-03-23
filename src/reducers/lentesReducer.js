@@ -31,13 +31,11 @@ export const lentesReducer = (state = initialState, action) => {
                 ...state,
                 lentes: [...action.payload]
             }
-
-
-        case types.lentesFileUrl:
-
+        case types.lentesDelete:
             return {
                 ...state,
-
+                active: null,
+                lentes: [...action.payload]
             }
         default:
             return state;

@@ -14,7 +14,6 @@ export const types = {
     lentesDesactive: '[Lentes] Desactive lente',
     lentesLoad: '[Lentes] Load Lentes',
     lentesUpdate: '[Lentes] Update Lente',
-    lentesFileUrl: '[Lentes] Update image url',
     lentesDelete: '[Lentes] Delete Lente',
     lentesLogoutCleaning: '[Lentes] Logout Cleaning'
 

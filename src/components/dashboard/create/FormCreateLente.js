@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
-import { activeLente, startAddNewLente, startUploadImageFirebase } from '../../../actions/lentes';
+import { activeLente, startAddNewLente } from '../../../actions/lentes';
 import { removeError, setError } from '../../../actions/ui';
+import { operadorString } from '../../../helpers/operadorString';
 import useForm from '../../../hooks/useForm';
 import { PreviewLente } from './PreviewLente';
 import { PreviewLenteNothing } from './PreviewLenteNothing';
@@ -14,9 +15,7 @@ export const FormCreateLente = () => {
     const dispatch = useDispatch();
 
     const [fileImage, setFileImage] = useState('');
-
     const [fileMarca, setFileMarca] = useState('');
-
 
     const { msgError } = useSelector(state => state.ui)
 
@@ -24,15 +23,22 @@ export const FormCreateLente = () => {
         title: 'Lente Monofocal',
         description: 'Antirallas',
         precio: '195.200',
+        urlImage: '',
+        urlMarca: ''
     });
 
-    const { title, description, precio } = formValues;
+
+    const { title, precio, url, description } = formValues;
+
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isFormValid()) {
-            dispatch(startUploadImageFirebase(fileImage));
-            dispatch(startAddNewLente(formValues));
+
+            formValues.description = operadorString(description);
+
+            dispatch(startAddNewLente(formValues, fileImage, fileMarca));
         } else {
             console.log('Formulario invalido')
         }
@@ -60,7 +66,8 @@ export const FormCreateLente = () => {
     const handlePreview = (e) => {
 
         if (isFormValid()) {
-            dispatch(activeLente('id_temp', formValues))
+            dispatch(activeLente('id_temp', formValues));
+
         }
     }
 
@@ -89,9 +96,9 @@ export const FormCreateLente = () => {
             <div className="row p-4">
                 <div className="col-6">
 
-                    <div className="row justify-content-center my-2">
+                    <div className="row justify-content-center my-2 ">
                         <div className="col-auto">
-                            <div className="card">
+                            <div className="card animate__animated animate__fadeInUp animate__faster">
                                 <div className="card-body">
 
                                     {
@@ -101,24 +108,37 @@ export const FormCreateLente = () => {
 
                                     <form onSubmit={handleSubmit} >
                                         <h4 className="text-center p-2">Añadir Lente</h4>
-                                        <div className="form-group mx-auto w-100">
+                                        <div className="form-group form-group-sm mx-auto w-100">
                                             <input
                                                 type="text"
-                                                className="form-control mb-3"
+                                                className="form-control form-control-sm mb-3"
                                                 placeholder="Titulo"
                                                 name="title"
                                                 value={title}
                                                 onChange={handleInputChange}
                                             />
 
-                                            <input
-                                                type="text"
-                                                className="form-control mb-3"
-                                                placeholder="Precio"
-                                                name="precio"
-                                                value={precio}
-                                                onChange={handleInputChange}
-                                            />
+
+                                            <div className="form-group">
+                                                <div className="input-group input-group-sm mb-2">
+                                                    <div className="input-group-prepend ">
+                                                        <span className="input-group-text">$</span>
+                                                    </div>
+
+                                                    <input
+                                                        type="text"
+                                                        className="form-control form-control-sm "
+                                                        placeholder="Precio"
+                                                        name="precio"
+                                                        value={precio}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                    <div className="input-group-append">
+                                                        <span className="input-group-text">.00</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <p>Imagen Lente: </p>
                                             <input
 
@@ -139,10 +159,10 @@ export const FormCreateLente = () => {
                                             />
 
                                             <div className="input-group mb-3">
-                                                <input
+                                                <textarea
                                                     type="text"
-                                                    className="form-control"
-                                                    placeholder="Caracteristicas"
+                                                    className="form-control form-control-sm"
+                                                    placeholder="Caracteristicas separadas por (,)"
                                                     name="description"
                                                     value={description}
                                                     onChange={handleInputChange}
@@ -153,7 +173,7 @@ export const FormCreateLente = () => {
 
                                             <span
                                                 className="btn btn-primary d-block w-100 mb-2 mx-auto"
-                                                onClick={handlePreview}
+                                                onClick={handlePreview} value={url}
                                             > Vista Previa </span>
                                             <button className="btn btn-primary d-block w-100 mx-auto"> Añadir </button>
 
@@ -173,7 +193,7 @@ export const FormCreateLente = () => {
                     <div className="row justify-content-center my-2">
                         <div className="col-auto">
 
-                            <div className="card p-3">
+                            <div className="card p-3 animate__animated animate__fadeInUp animate__faster">
                                 <h4 className="text-center p-2">Vista Previa</h4>
 
                                 {

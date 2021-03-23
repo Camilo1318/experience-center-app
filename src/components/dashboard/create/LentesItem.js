@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { activeLente } from '../../../actions/lentes';
+import { activeLente, startDeleteLente } from '../../../actions/lentes';
 
-export const LentesItem = ({ id, title, description, precio, index }) => {
+export const LentesItem = ({ id, title, description, precio, urlImage, urlMarca, index }) => {
 
 
     const dispatch = useDispatch();
@@ -14,7 +14,12 @@ export const LentesItem = ({ id, title, description, precio, index }) => {
     }
 
     const handleDeleteLente = (id) => {
-        console.log(id)
+        console.log('Estamos eliminando el lente' + id)
+        dispatch(startDeleteLente(id))
+    }
+
+    const handleEditLente = (id) => {
+        console.log('Estamos editando el lente' + id)
     }
 
     return (
@@ -24,20 +29,31 @@ export const LentesItem = ({ id, title, description, precio, index }) => {
                 <tr className="table-transparent" role="button" onClick={handleActiveClick}>
                     <th scope="row">{index + 1}</th>
                     <td>{title}</td>
-                    <td>(Imagen Lente)</td>
-                    <td>(Imagen Marca)</td>
+                    <td><img src={urlImage} className="d-block mx-auto img-thumbnail" alt="" style={{ maxWidth: 50 }} /></td>
+                    <td><img src={urlMarca} className="d-block mx-auto img-thumbnail" alt="" style={{ maxWidth: 50 }} /></td>
                     <td>{description}</td>
                     <td>{precio}</td>
-                    <td><button
-                        className="btn btn-danger"
-                        onClick={() => handleDeleteLente(id)}
+                    <td>
+                        <button
+                            className="btn btn-danger btn-sm"
+                            onClick={() => handleDeleteLente(id)}
 
-                    >Eliminar</button></td>
-                    <td><button
-                        className="btn btn-info"
-                        onClick={() => handleDeleteLente(id)}
+                        >
+                            Eliminar
+                        </button>
+                    </td>
 
-                    >Editar</button></td>
+                    <td>
+
+                        <button
+                            className="btn btn-info btn-sm"
+                            onClick={() => handleEditLente(id)}
+
+                        >
+                            Editar
+                        </button>
+
+                    </td>
 
                 </tr>
             </tbody>

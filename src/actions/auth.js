@@ -1,6 +1,7 @@
 
 import { firebase } from '../firebase/fierabse-config'
 import { types } from '../types/types';
+import { logoutCleaningLentes } from './lentes';
 import { removeError, setError } from './ui';
 
 export const startLoginWithEmailPasswordName = (email, passward) => {
@@ -24,7 +25,7 @@ export const startLoginWithEmailPasswordName = (email, passward) => {
                 } else if (error.code === 'auth/wrong-password') {
                     dispatch(setError('Contraseña incorrecta'));
                 } else {
-                    dispatch(removeError())
+                    dispatch(removeError());
                 }
             });
 
@@ -36,7 +37,8 @@ export const startLogout = () => {
     return async (dispatch) => {
         await firebase.auth().signOut();
 
-        dispatch(logout())
+        dispatch(logout());
+        dispatch(logoutCleaningLentes());
     }
 }
 

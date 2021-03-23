@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { activeLente, desactiveLente } from '../../../actions/lentes';
+import { desactiveLente } from '../../../actions/lentes';
 import { FormCreateLente } from '../create/FormCreateLente';
 import { LentesTable } from './LentesTable';
 
@@ -12,15 +12,13 @@ export const CreateLenteScreen = () => {
     useEffect(() => {
         dispatch(desactiveLente())
 
-    }, [])
+    }, [dispatch])
 
     return (
         <>
 
 
             <FormCreateLente />
-
-
 
 
             <LentesTable />

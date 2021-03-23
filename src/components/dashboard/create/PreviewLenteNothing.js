@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+
 
 export const PreviewLenteNothing = () => {
 
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 250 }}>
+                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 300 }}>
                     <h6 className="card-header"><strong>Titulo del Lente</strong></h6>
                     <h2>{ }</h2>
 
 
                     <img src="./assets/lentePreview.jpg"
                         className="card-img-top mx-auto d-block mt-3"
+                        alt=""
                         style={{ width: 120 }} />
 
 
                     <img src="./assets/marcaPreview.png"
                         className="card-img-top mx-auto d-block mt-3"
+                        alt=""
                         style={{ width: 120 }} />
 
 

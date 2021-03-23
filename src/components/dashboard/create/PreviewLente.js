@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 export const PreviewLente = ({ fileImage, fileMarca }) => {
 
     const { active } = useSelector(state => state.lentes)
-    const { title, description, precio } = active
-
+    const { id, title, description, precio } = active
+    console.log(description);
     const [previewLente, setPreviewLente] = useState(null);
     const [previewMarca, setPreviewMarca] = useState(null);
 
@@ -37,28 +37,37 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 250 }}>
+                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 300 }}>
                     <h6 className="card-header"><strong>{title}</strong></h6>
                     <h2>{ }</h2>
 
                     {/* Condicion pregunta por id =! 'id_temp' muestra url si no previewLente */}
+
+                    {(id)}
+
                     <img src={previewLente}
                         className="card-img-top mx-auto d-block mt-2"
+                        alt=""
                         style={{ width: 120 }} />
 
                     <img src={previewMarca}
                         className="card-img-top mx-auto d-block mt-2"
+                        alt=""
                         style={{ width: 120 }}
                     />
 
                     <div className="card-body">
 
                         <div className="list-group bg-light border-light">
-                            <span className="card-text"> {description}</span>
-                            <span className="card-text"> Calidad Optica</span>
-                            <span className="card-text"> Resistencia</span>
-                            <span className="card-text"> Super Hidrofóbico</span>
-                            <span className="card-text"> Antirallas</span>
+                            <span className="card-text">
+
+                                {/* {
+                                    description.map(item => (
+                                        console.log(item)
+                                    ))
+                                } */}
+
+                            </span>
                         </div>
 
 
