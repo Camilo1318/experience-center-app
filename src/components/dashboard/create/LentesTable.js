@@ -20,7 +20,9 @@ export const LentesTable = () => {
                             <th scope="col"><strong>Nombre</strong></th>
                             <th scope="col"><strong>Imagen Lente</strong></th>
                             <th scope="col"><strong>Imagen Marca</strong></th>
-                            <th scope="col"><strong>Descripcion</strong></th>
+                            <th scope="col"><strong>Descripción</strong></th>
+                            <th scope="col"><strong>Proteccion</strong></th>
+                            <th scope="col"><strong>Formula</strong></th>
                             <th scope="col"><strong>Precio</strong></th>
                             <th scope="col"><strong>Acciones</strong></th>
 

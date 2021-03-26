@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
 import { activeLente, startAddNewLente } from '../../../actions/lentes';
-import { removeError, setError } from '../../../actions/ui';
-import { operadorString } from '../../../helpers/operadorString';
+import { removeError, resetFormLente, setError } from '../../../actions/ui';
+import { arrayToString } from '../../../helpers/arrayToString';
+import { stringToArray } from '../../../helpers/stringToArray';
 import useForm from '../../../hooks/useForm';
 import { PreviewLente } from './PreviewLente';
 import { PreviewLenteNothing } from './PreviewLenteNothing';
@@ -11,6 +12,8 @@ import { PreviewLenteNothing } from './PreviewLenteNothing';
 export const FormCreateLente = () => {
 
     const { active } = useSelector(state => state.lentes)
+    const { editing } = useSelector(state => state.lentes)
+    const { resetForm } = useSelector(state => state.ui)
 
     const dispatch = useDispatch();
 
@@ -19,25 +22,25 @@ export const FormCreateLente = () => {
 
     const { msgError } = useSelector(state => state.ui)
 
-    const [formValues, handleInputChange] = useForm({
-        title: 'Lente Monofocal',
-        description: 'Antirallas',
-        precio: '195.200',
+    const [formValues, handleInputChange, reset] = useForm({
+        title: '',
+        description: '',
+        precio: '',
         urlImage: '',
-        urlMarca: ''
+        urlMarca: '',
+        proteccion: '',
+        cir: '',
+        esf: '',
+        adc: ''
+
     });
 
-
-    const { title, precio, url, description } = formValues;
-
-
+    const { title, precio, description, cir, esf, adc, proteccion } = formValues;
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         if (isFormValid()) {
-
-            formValues.description = operadorString(description);
-
             dispatch(startAddNewLente(formValues, fileImage, fileMarca));
         } else {
             console.log('Formulario invalido')
@@ -45,28 +48,33 @@ export const FormCreateLente = () => {
     }
 
     const isFormValid = () => {
+
         if (title.length <= 3) {
             dispatch(setError('Titulo debe ser de mayor longitud'))
             return false;
         } else if (!validator.isNumeric(precio)) {
             dispatch(setError('Precio incorrecto'))
             return false;
-        } else if (description.length < 5) {
-            dispatch(setError('descripcion invalida'))
-            return false;
         } else if (!fileImage || !fileMarca) {
             dispatch(setError('Debe cargar una imagen valida'));
             return false;
+        } else if (description.length < 3) {
+            console.log(description.length);
+            dispatch(setError('descripcion invalida'))
+            return false;
         }
-
         dispatch(removeError());
         return true;
     }
 
     const handlePreview = (e) => {
-
+        console.log(active);
         if (isFormValid()) {
-            dispatch(activeLente('id_temp', formValues));
+
+            const formValuesWithDescriptionArray = { ...formValues };
+            formValuesWithDescriptionArray.description = stringToArray(formValues.description)
+            console.log(formValuesWithDescriptionArray);
+            dispatch(activeLente('id_temp', formValuesWithDescriptionArray));
 
         }
     }
@@ -91,6 +99,31 @@ export const FormCreateLente = () => {
         }
     }
 
+    useEffect(() => {
+
+        if (active && resetForm) {
+
+            console.log(active.description);
+            const stringDescription = arrayToString(active.description);
+            console.log(stringDescription);
+
+            reset({
+                title: active.title,
+                description: stringDescription,
+                precio: active.precio,
+                urlImage: '',
+                urlMarca: '',
+                proteccion: '',
+                cir: active.cir,
+                esf: active.esf,
+                adc: active.adc
+            })
+            dispatch(resetFormLente(false))
+        }
+
+
+    }, [active, reset, dispatch])
+
     return (
         <>
             <div className="row p-4">
@@ -106,7 +139,7 @@ export const FormCreateLente = () => {
                                         (<span className="badge badge-danger w-100 mb-2">{msgError}</span>)
                                     }
 
-                                    <form onSubmit={handleSubmit} >
+                                    <form onSubmit={handleSubmit} className="w-75 mx-auto" >
                                         <h4 className="text-center p-2">Añadir Lente</h4>
                                         <div className="form-group form-group-sm mx-auto w-100">
                                             <input
@@ -158,6 +191,58 @@ export const FormCreateLente = () => {
                                                 accept=".jpg, .jpeg, .png"
                                             />
 
+                                            <p>Formula: </p>
+                                            <div className="row g-3 mb-3">
+                                                <div className="col">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Esfera"
+                                                        name="cir"
+                                                        onChange={handleInputChange}
+                                                        value={cir}
+
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Circulo"
+                                                        name="esf"
+                                                        onChange={handleInputChange}
+                                                        value={esf}
+
+                                                    />
+                                                </div>
+                                                <div className="col">
+                                                    <input
+                                                        type="text"
+                                                        className="form-control form-control-sm"
+                                                        placeholder="Adicion"
+                                                        name="adc"
+                                                        onChange={handleInputChange}
+                                                        value={adc}
+
+                                                    />
+                                                </div>
+
+                                            </div>
+
+                                            <div className="form-group">
+                                                <select
+                                                    className="custom-select"
+                                                    name="proteccion"
+                                                    value={proteccion}
+                                                    onChange={handleInputChange}
+                                                >
+                                                    <option value="sinProteccion" defaultValue="sinProteccion">Sin proteccion</option>
+                                                    <option value="blancos">Blancos</option>
+                                                    <option value="proteccionAzul">Proteccion Luz Azul</option>
+                                                    <option value="fotosensibles">Fotosensibles</option>
+                                                </select>
+                                            </div>
+
                                             <div className="input-group mb-3">
                                                 <textarea
                                                     type="text"
@@ -173,7 +258,7 @@ export const FormCreateLente = () => {
 
                                             <span
                                                 className="btn btn-primary d-block w-100 mb-2 mx-auto"
-                                                onClick={handlePreview} value={url}
+                                                onClick={handlePreview}
                                             > Vista Previa </span>
                                             <button className="btn btn-primary d-block w-100 mx-auto"> Añadir </button>
 
@@ -190,7 +275,7 @@ export const FormCreateLente = () => {
                 <div className="col-6">
 
 
-                    <div className="row justify-content-center my-2">
+                    <div className="row justify-content-center my-5 ">
                         <div className="col-auto">
 
                             <div className="card p-3 animate__animated animate__fadeInUp animate__faster">

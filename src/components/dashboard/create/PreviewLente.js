@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 export const PreviewLente = ({ fileImage, fileMarca }) => {
 
     const { active } = useSelector(state => state.lentes)
-    const { id, title, description, precio } = active
-    console.log(description);
+    const { id, title, precio, description, urlImage, urlMarca, cir, esf, adc } = active;
     const [previewLente, setPreviewLente] = useState(null);
     const [previewMarca, setPreviewMarca] = useState(null);
 
@@ -36,36 +35,64 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
 
     return (
         <>
-            <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 300 }}>
+            <div className="col mb-2">
+                <div className="card text-center shadow border-light" style={{ minWidth: 250 }}>
                     <h6 className="card-header"><strong>{title}</strong></h6>
-                    <h2>{ }</h2>
 
-                    {/* Condicion pregunta por id =! 'id_temp' muestra url si no previewLente */}
+                    {
+                        (id !== 'id_temp') ?
+                            (
+                                <img src={urlImage}
+                                    className="card-img-top mx-auto d-block mt-1"
+                                    alt=""
+                                    style={{ width: 120 }} />
 
-                    {(id)}
+                            ) :
 
-                    <img src={previewLente}
-                        className="card-img-top mx-auto d-block mt-2"
-                        alt=""
-                        style={{ width: 120 }} />
+                            (
+                                <img src={previewLente}
+                                    className="card-img-top mx-auto d-block mt-1"
+                                    alt=""
+                                    style={{ width: 120 }} />
+                            )
 
-                    <img src={previewMarca}
-                        className="card-img-top mx-auto d-block mt-2"
-                        alt=""
-                        style={{ width: 120 }}
-                    />
+                    }
+
+                    {
+                        (id !== 'id_temp') ?
+                            (
+                                <img src={urlMarca}
+                                    className="card-img-top mx-auto d-block mt-1"
+                                    alt=""
+                                    style={{ width: 160 }}
+                                />
+                            ) :
+                            (
+                                <img src={previewMarca}
+                                    className="card-img-top mx-auto d-block mt-1"
+                                    alt=""
+                                    style={{ width: 160 }}
+                                />
+                            )
+                    }
 
                     <div className="card-body">
 
+                        <span className="badge badge-pill badge-info mr-2">{cir}</span>
+                        <span className="badge badge-pill badge-info mr-2">{esf}</span>
+                        <span className="badge badge-pill badge-info">{adc}</span>
+
                         <div className="list-group bg-light border-light">
                             <span className="card-text">
+                                <ul className="list-group list-group-flush">
 
-                                {/* {
-                                    description.map(item => (
-                                        console.log(item)
-                                    ))
-                                } */}
+                                    {
+                                        description.map((item, index) => (
+                                            <li key={index} className="list-unstyled mb-1">{item}</li>
+                                        ))
+                                    }
+
+                                </ul>
 
                             </span>
                         </div>
@@ -74,17 +101,11 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
                     </div>
 
                     <div className="card-footer ">
-                        <div className="row">
-                            <div className="col">
-                                <h6>Precio : </h6>
-                            </div>
-                            <div className="col">
-                                <label className="control-label"> <strong>$</strong> {precio}</label>
-                            </div>
-                        </div>
+
+                        <label className="control-label"> <strong>$</strong> {precio} </label>
+
                     </div>
                 </div>
-
             </div>
         </>
     )

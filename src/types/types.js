@@ -7,12 +7,14 @@ export const types = {
     // Ui Reducer   
     uiSetError: '[UI] Error Encontrado',
     uiRemoveError: '[UI] Sin Errores',
+    uiResetFormLente: '[UI] Reset Form Lentes',
 
     // Lentes Reducer
     lentesAdd: '[Lentes] Add Lente',
     lentesActive: '[Lentes] Set active lente',
     lentesDesactive: '[Lentes] Desactive lente',
     lentesLoad: '[Lentes] Load Lentes',
+    lentesEditing: '[Lentes] Editing Lente',
     lentesUpdate: '[Lentes] Update Lente',
     lentesDelete: '[Lentes] Delete Lente',
     lentesLogoutCleaning: '[Lentes] Logout Cleaning'

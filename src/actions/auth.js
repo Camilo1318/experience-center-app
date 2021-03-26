@@ -4,6 +4,8 @@ import { types } from '../types/types';
 import { logoutCleaningLentes } from './lentes';
 import { removeError, setError } from './ui';
 
+import Swal from 'sweetalert2'
+
 export const startLoginWithEmailPasswordName = (email, passward) => {
 
     return (dispatch) => {
@@ -21,7 +23,12 @@ export const startLoginWithEmailPasswordName = (email, passward) => {
             }).catch((error) => {
                 console.log(error);
                 if (error.code === 'auth/user-not-found') {
-                    dispatch(setError('Usuario no encontrado'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Usuario no encontrado',
+                        footer: '<a href>Comunicate con soporte para cualquier inquietud</a>',
+                    })
                 } else if (error.code === 'auth/wrong-password') {
                     dispatch(setError('Contraseña incorrecta'));
                 } else {

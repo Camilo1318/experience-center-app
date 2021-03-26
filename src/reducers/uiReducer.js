@@ -1,7 +1,8 @@
 import { types } from "../types/types";
 
 const initialState = {
-    msgError: null
+    msgError: null,
+    resetForm: false
 }
 
 export const uiReducer = (state = initialState, action) => {
@@ -19,7 +20,11 @@ export const uiReducer = (state = initialState, action) => {
                 ...state,
                 msgError: null
             }
-
+        case types.uiResetFormLente:
+            return {
+                ...state,
+                resetForm: action.payload
+            }
         default:
             return state;
     }

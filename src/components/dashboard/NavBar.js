@@ -28,7 +28,7 @@ export const NavBar = () => {
             </div>
 
             <div>
-                <div className="navbar-collapse collapse w-100 order-3">
+                <div className="navbar-collapse w-100 order-3">
                     <ul className="navbar-nav ml-auto">
 
                         <div className="navbar-nav">

@@ -8,3 +8,8 @@ export const setError = (err) => ({
 export const removeError = () => ({
     type: types.uiRemoveError
 })
+
+export const resetFormLente = (state) => ({
+    type: types.uiResetFormLente,
+    payload: state
+})

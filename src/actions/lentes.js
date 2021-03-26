@@ -1,12 +1,15 @@
 import { db, storage } from '../firebase/fierabse-config'
+import { stringToArray } from '../helpers/stringToArray';
 import { types } from '../types/types';
-
+import Swal from 'sweetalert2'
 // Actions asincronas---------------------------------------------------------------
 
 export const startAddNewLente = (newLente, fileImage, fileMarca) => {
     return async (dispatch, getState) => {
         const { uid } = getState().auth;
         const { lentes } = getState().lentes
+
+        newLente.description = stringToArray(newLente.description);
 
         const doc = await db.collection(`${uid}/Panel/lentes`).add(newLente);
 
@@ -60,30 +63,56 @@ export const startLoadingLentes = (uid) => {
 
 export const startDeleteLente = (id) => {
     return async (dispatch, getState) => {
+
         const { uid } = getState().auth;
         const { lentes } = getState().lentes
 
-        const ImageRef = storage.ref().child(`${uid}/${id}`);
+        Swal.fire({
+            title: 'Estas seguro?',
+            text: "No podrás deshacer los cambios!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Eliminarlo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
 
-        // Now we get the references of these files
-        ImageRef.listAll().then(result => {
-            result.items.forEach(file => {
-                file.delete();
-            });
-        }).catch(function (error) {
-            console.log('No se pudo eliminar los archivos')
-        });
+                const ImageRef = storage.ref().child(`${uid}/${id}`);
 
-        try {
-            await db.collection(uid).doc(`Panel/lentes/${id}`).delete();
+                // Now we get the references of these files
+                ImageRef.listAll().then(result => {
+                    result.items.forEach(file => {
+                        file.delete();
+                    });
+                }).catch(function (error) {
+                    console.log('No se pudo eliminar los archivos')
+                });
 
-        } catch (error) {
-            console.log(error)
-        }
+                try {
+                    db.collection(uid).doc(`Panel/lentes/${id}`).delete();
+                    Swal.fire(
+                        'Eliminado!',
+                        'Lente eliminador del inventario.',
+                        'success'
+                    )
 
-        const newLentes = lentes.filter(lente => lente.id !== id);
+                } catch (error) {
+                    console.log(error)
+                }
 
-        dispatch(deleteLente(newLentes));
+                const newLentes = lentes.filter(lente => lente.id !== id);
+
+                dispatch(deleteLente(newLentes));
+            }
+        })
+    }
+}
+
+const startUpdateLente = (id) => {
+    return (dispatch, getState) => {
+        dispatch(editingLente(true))
+
     }
 }
 
@@ -114,4 +143,9 @@ export const deleteLente = (newLentes) => ({
 
 export const logoutCleaningLentes = () => ({
     type: types.lentesLogoutCleaning,
+})
+
+export const editingLente = (state) => ({
+    type: types.lentesEditing,
+    payload: state
 })

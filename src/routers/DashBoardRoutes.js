@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom'
 import { CreateLenteScreen } from '../components/dashboard/create/CreateLenteScreen'
 import { CatalogScreen } from '../components/dashboard/catalog/CatalogScreen'
 import { NavBar } from '../components/dashboard/NavBar'
+import { MainPage } from '../components/dashboard/MainPage'
 
 
 export const DashBoardRoutes = () => {
@@ -19,7 +20,7 @@ export const DashBoardRoutes = () => {
 
                     <Route exact path="/create-product" component={CreateLenteScreen} />
                     <Route exact path="/catalog" component={CatalogScreen} />
-
+                    <Route path="/" component={MainPage} />
 
 
                 </Switch>

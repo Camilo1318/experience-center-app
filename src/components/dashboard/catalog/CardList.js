@@ -7,11 +7,9 @@ export const CardList = () => {
     const { lentes } = useSelector(state => state.lentes);
 
 
-    // const products = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
     return (
         <div>
-            <div className="row row-cols-1 row-cols-sm-3 animate__animated animate__fadeInUp">
+            <div className="row row-cols-1 row-cols-sm-4 animate__animated animate__fadeInUp">
 
                 {
                     lentes.map(lente => (

@@ -8,7 +8,6 @@ import '../../styles/LoginScreen.css'
 import { removeError, setError } from '../../actions/ui'
 
 
-
 export const LoginScreen = () => {
 
     const dispatch = useDispatch();
@@ -50,7 +49,7 @@ export const LoginScreen = () => {
                     className="row justify-content-center align-items-center"
                     style={{ height: "100vh" }}
                 >
-                    <div className="col-4">
+                    <div className="col-11 col-sm-4">
                         <div className="card border-info">
                             <h2 className="card-title text-center mt-4">Iniciar Sesion</h2>
                             <div className="card-body">

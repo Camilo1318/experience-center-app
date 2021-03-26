@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/styles/LoginScreen.css"],"names":[],"mappings":"AAAA,YAEI,wBAAyB,CACzB,wDAEJ","file":"main.ddac4084.chunk.css","sourcesContent":["#background{\r\n\r\n    background-color: #0093E9;\r\n    background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);\r\n\r\n}"]}

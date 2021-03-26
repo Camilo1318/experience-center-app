@@ -1,11 +1,11 @@
-
+import React from 'react';
 
 export const PreviewLenteNothing = () => {
 
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 210, maxWidth: 300 }}>
+                <div className="card text-center shadow border-light" style={{ minWidth: 250 }}>
                     <h6 className="card-header"><strong>Titulo del Lente</strong></h6>
                     <h2>{ }</h2>
 
@@ -19,7 +19,7 @@ export const PreviewLenteNothing = () => {
                     <img src="./assets/marcaPreview.png"
                         className="card-img-top mx-auto d-block mt-3"
                         alt=""
-                        style={{ width: 120 }} />
+                        style={{ width: 160 }} />
 
 
                     <div className="card-body">
@@ -36,14 +36,9 @@ export const PreviewLenteNothing = () => {
                     </div>
 
                     <div className="card-footer ">
-                        <div className="row">
-                            <div className="col">
-                                <h6>Precio: </h6>
-                            </div>
-                            <div className="col">
-                                <label className="control-label"> <strong>$</strong> 0.00 </label>
-                            </div>
-                        </div>
+
+                        <label className="control-label"> <strong>$</strong> 0.00 </label>
+
                     </div>
                 </div>
 
