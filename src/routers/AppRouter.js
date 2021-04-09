@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Switch } from 'react-router-dom'
 
 import { login } from '../actions/auth'
 import { startLoadingLentes } from '../actions/lentes'
@@ -80,12 +80,7 @@ export const AppRouter = () => {
                             })
                             return firebase.auth().signOut();
                         }
-
-
                     });
-
-
-
             }
             else {
                 setIsLoggedIn(false);
@@ -93,12 +88,6 @@ export const AppRouter = () => {
         });
 
     }, [dispatch])
-
-
-
-    useEffect(() => {
-
-    }, [])
 
     return (
         <Router>
@@ -111,14 +100,13 @@ export const AppRouter = () => {
                         isAutenticated={isLoggedIn}
                         component={LoginScreen}
                     />
-
                     <PrivateRoute
+
                         path="/"
                         isAutenticated={isLoggedIn}
                         component={DashBoardRoutes}
                     />
 
-                    <Redirect to="/login" />
                 </Switch>
             </div>
         </Router>

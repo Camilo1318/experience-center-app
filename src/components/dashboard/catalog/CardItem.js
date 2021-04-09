@@ -1,24 +1,26 @@
 import React from 'react'
-// import { useSelector } from 'react-redux'
+
 
 export const CardItem = ({ title, description, precio, urlImage, urlMarca, cir, esf, adc }) => {
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 230, maxWidth: 250 }}>
-                    <h6 className="card-header">{title}</h6>
+                <div className="card text-center shadow py-3" style={{ minWidth: 180, maxWidth: 250 }}>
 
-                    <img src={urlImage} className="card-img-top mx-auto d-block mt-3" alt="" style={{ width: 80 }} />
-                    <img src={urlMarca} className="card-img-top mx-auto d-block mt-3" alt="" style={{ width: 120 }} />
+                    <h6 className="card-title">{title}</h6>
+
+                    <img src={urlImage.url} className="card-img-top mx-auto d-block mt-3" alt="" style={{ width: 80 }} />
+                    <img src={urlMarca.url} className="card-img-top mx-auto d-block mt-3" alt="" style={{ width: 120 }} />
+
+                    <div className="my-2">
+                        <span className="badge badge-pill badge-info mr-2">{cir}</span>
+                        <span className="badge badge-pill badge-info mr-2">{esf}</span>
+                        <span className="badge badge-pill badge-info">{adc}</span>
+                    </div>
 
 
                     <div className="card-body">
 
-                        <div className="mb-2">
-                            <span class="badge badge-pill badge-info mr-2">{cir}</span>
-                            <span class="badge badge-pill badge-info mr-2">{esf}</span>
-                            <span class="badge badge-pill badge-info">{adc}</span>
-                        </div>
 
                         <div className="list-group bg-light border-light">
                             <span className="card-text">
@@ -40,15 +42,10 @@ export const CardItem = ({ title, description, precio, urlImage, urlMarca, cir, 
 
                     </div>
 
-                    <div className="card-footer ">
-                        <div className="row">
-                            <div className="col">
-                                <h6>Precio: </h6>
-                            </div>
-                            <div className="col">
-                                <p className="control-label"> <strong>$</strong> {precio}</p>
-                            </div>
-                        </div>
+                    <div className="card-text">
+
+                        <p> $ {precio} </p>
+
                     </div>
                 </div>
 

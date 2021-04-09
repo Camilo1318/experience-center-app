@@ -10,21 +10,21 @@ export const LentesTable = () => {
         <div className="row justify-content-center">
             <div className="col-auto">
 
+                <table className="table table-sm table-hover table-responsive-sm" >
 
-                <h2 className="p-2 text-center">Inventario de Lentes</h2>
-
-                <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col"><strong>ID</strong></th>
-                            <th scope="col"><strong>Nombre</strong></th>
-                            <th scope="col"><strong>Imagen Lente</strong></th>
-                            <th scope="col"><strong>Imagen Marca</strong></th>
-                            <th scope="col"><strong>Descripción</strong></th>
-                            <th scope="col"><strong>Proteccion</strong></th>
-                            <th scope="col"><strong>Formula</strong></th>
-                            <th scope="col"><strong>Precio</strong></th>
-                            <th scope="col"><strong>Acciones</strong></th>
+                            <th scope="col" className="text-center"><strong>ID</strong></th>
+                            <th scope="col" className="text-center"><strong>Tipo</strong></th>
+                            <th scope="col" className="text-center"><strong>Nombre</strong></th>
+                            <th scope="col" className="text-center"><strong>Imagen Lente</strong></th>
+                            <th scope="col" className="text-center"><strong>Imagen Marca</strong></th>
+                            <th scope="col" className="text-center"><strong>Descripción</strong></th>
+                            <th scope="col" className="text-center"><strong>Proteccion</strong></th>
+                            <th scope="col" className="text-center"><strong>Formula</strong></th>
+                            <th scope="col" className="text-center"><strong>Precio</strong></th>
+                            <th scope="col" className="text-center"><strong>Eliminar</strong></th>
+                            <th scope="col" className="text-center"><strong>Editar</strong></th>
 
                         </tr>
                     </thead>
@@ -40,6 +40,7 @@ export const LentesTable = () => {
                     }
 
                 </table>
+
             </div>
         </div>
 

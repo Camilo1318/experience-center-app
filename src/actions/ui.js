@@ -13,3 +13,8 @@ export const resetFormLente = (state) => ({
     type: types.uiResetFormLente,
     payload: state
 })
+
+export const setShowHideModal = (state) => ({
+    type: types.uiModalState,
+    payload: state
+})

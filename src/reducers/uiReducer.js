@@ -2,7 +2,8 @@ import { types } from "../types/types";
 
 const initialState = {
     msgError: null,
-    resetForm: false
+    resetForm: false,
+    ModalShowHide: false,
 }
 
 export const uiReducer = (state = initialState, action) => {
@@ -24,6 +25,13 @@ export const uiReducer = (state = initialState, action) => {
             return {
                 ...state,
                 resetForm: action.payload
+            }
+
+        case types.uiModalState:
+
+            return {
+                ...state,
+                ModalShowHide: action.payload
             }
         default:
             return state;

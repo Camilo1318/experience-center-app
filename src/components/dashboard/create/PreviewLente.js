@@ -1,48 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux';
 
-export const PreviewLente = ({ fileImage, fileMarca }) => {
+export const PreviewLente = () => {
 
     const { active } = useSelector(state => state.lentes)
     const { id, title, precio, description, urlImage, urlMarca, cir, esf, adc } = active;
-    const [previewLente, setPreviewLente] = useState(null);
-    const [previewMarca, setPreviewMarca] = useState(null);
-
-    useEffect(() => {
-        if (fileImage) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewLente(reader.result);
-            };
-            reader.readAsDataURL(fileImage)
-        } else {
-            setPreviewLente(null)
-        }
-    }, [fileImage]);
-
-    useEffect(() => {
-        if (fileMarca) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewMarca(reader.result);
-            };
-            reader.readAsDataURL(fileMarca)
-        } else {
-            setPreviewMarca(null)
-        }
-    }, [fileMarca]);
-
 
     return (
         <>
             <div className="col mb-2">
-                <div className="card text-center shadow border-light" style={{ minWidth: 250 }}>
+                <div className="card text-center shadow border-light" style={{ minWidth: 230, maxWidth: 250 }}>
                     <h6 className="card-header"><strong>{title}</strong></h6>
 
                     {
                         (id !== 'id_temp') ?
                             (
-                                <img src={urlImage}
+                                <img src={urlImage.url}
                                     className="card-img-top mx-auto d-block mt-1"
                                     alt=""
                                     style={{ width: 120 }} />
@@ -50,7 +23,7 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
                             ) :
 
                             (
-                                <img src={previewLente}
+                                <img src={urlImage.url}
                                     className="card-img-top mx-auto d-block mt-1"
                                     alt=""
                                     style={{ width: 120 }} />
@@ -61,14 +34,14 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
                     {
                         (id !== 'id_temp') ?
                             (
-                                <img src={urlMarca}
+                                <img src={urlMarca.url}
                                     className="card-img-top mx-auto d-block mt-1"
                                     alt=""
                                     style={{ width: 160 }}
                                 />
                             ) :
                             (
-                                <img src={previewMarca}
+                                <img src={urlMarca.url}
                                     className="card-img-top mx-auto d-block mt-1"
                                     alt=""
                                     style={{ width: 160 }}
@@ -106,6 +79,9 @@ export const PreviewLente = ({ fileImage, fileMarca }) => {
 
                     </div>
                 </div>
+
+
+
             </div>
         </>
     )

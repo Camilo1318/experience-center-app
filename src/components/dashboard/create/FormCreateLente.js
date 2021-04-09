@@ -1,28 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
-import { activeLente, startAddNewLente } from '../../../actions/lentes';
-import { removeError, resetFormLente, setError } from '../../../actions/ui';
+import { activeLente, startAddNewLente, startUpdateLente, editingLente, desactiveLente, startDeleteAllLentes } from '../../../actions/lentes';
+import { removeError, resetFormLente, setError, setShowHideModal } from '../../../actions/ui';
 import { arrayToString } from '../../../helpers/arrayToString';
 import { stringToArray } from '../../../helpers/stringToArray';
 import useForm from '../../../hooks/useForm';
 import { PreviewLente } from './PreviewLente';
 import { PreviewLenteNothing } from './PreviewLenteNothing';
+import { getUrlDownloadAssets } from '../../../helpers/getUrlDownloadAssets'
+
+import { IoMdAddCircleOutline } from 'react-icons/io'
+import { FaCloudUploadAlt, FaCloudDownloadAlt } from 'react-icons/fa'
+import { IconContext } from 'react-icons'
+import { RiDeleteBin5Line } from 'react-icons/ri'
+import { Col, Form, FormControl, FormGroup, InputGroup, Button, Row, Modal, Badge } from 'react-bootstrap';
 
 export const FormCreateLente = () => {
 
     const { active } = useSelector(state => state.lentes)
-    const { editing } = useSelector(state => state.lentes)
+    const { idEditing } = useSelector(state => state.lentes)
     const { resetForm } = useSelector(state => state.ui)
+    const { ModalShowHide } = useSelector(state => state.ui)
 
     const dispatch = useDispatch();
 
-    const [fileImage, setFileImage] = useState('');
-    const [fileMarca, setFileMarca] = useState('');
+    const [ableButton, setableButton] = useState(false)
+    const [dataToSend, setdataToSend] = useState({})
 
     const { msgError } = useSelector(state => state.ui)
 
     const [formValues, handleInputChange, reset] = useForm({
+        lenteType: '',
         title: '',
         description: '',
         precio: '',
@@ -35,15 +44,25 @@ export const FormCreateLente = () => {
 
     });
 
-    const { title, precio, description, cir, esf, adc, proteccion } = formValues;
+    const { lenteType, title, precio, description, cir, esf, adc, proteccion, urlImage, urlMarca } = formValues;
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (isFormValid()) {
-            dispatch(startAddNewLente(formValues, fileImage, fileMarca));
+
+            if (idEditing) {
+                dispatch(startUpdateLente(dataToSend));
+            } else {
+                dispatch(startAddNewLente(dataToSend));
+            }
+            setableButton(false);
+            dispatch(desactiveLente())
+            dispatch(setShowHideModal(false));
+            reset();
+
         } else {
-            console.log('Formulario invalido')
+            console.log('Formulario invalido');
         }
     }
 
@@ -52,13 +71,25 @@ export const FormCreateLente = () => {
         if (title.length <= 3) {
             dispatch(setError('Titulo debe ser de mayor longitud'))
             return false;
+        } else if (validator.isEmpty(lenteType)) {
+            dispatch(setError('Debe Seleccionar un Tipo'))
+            return false;
         } else if (!validator.isNumeric(precio)) {
             dispatch(setError('Precio incorrecto'))
             return false;
-        } else if (!fileImage || !fileMarca) {
-            dispatch(setError('Debe cargar una imagen valida'));
+        } else if (validator.isEmpty(urlImage)) {
+            dispatch(setError('Debe Seleccionar un color de Lente'))
             return false;
-        } else if (description.length < 3) {
+        } else if (validator.isEmpty(urlMarca)) {
+            dispatch(setError('Debe Seleccionar una Marca'))
+            return false;
+        } else if (validator.isEmpty(cir) || validator.isEmpty(esf) || validator.isEmpty(adc)) {
+            dispatch(setError('Error en Formula'))
+            return false;
+        } else if (validator.isEmpty(proteccion)) {
+            dispatch(setError('Debe Seleccionar una proteccion'))
+            return false;
+        } else if (description.length < 2) {
             console.log(description.length);
             dispatch(setError('descripcion invalida'))
             return false;
@@ -68,237 +99,323 @@ export const FormCreateLente = () => {
     }
 
     const handlePreview = (e) => {
-        console.log(active);
+
         if (isFormValid()) {
 
-            const formValuesWithDescriptionArray = { ...formValues };
-            formValuesWithDescriptionArray.description = stringToArray(formValues.description)
-            console.log(formValuesWithDescriptionArray);
-            dispatch(activeLente('id_temp', formValuesWithDescriptionArray));
+            setableButton(true);
 
+            const formValuesToSend = { ...formValues };
+
+            getUrlDownloadAssets(urlImage, urlMarca).then(urls => {
+                formValuesToSend.urlImage = {
+                    name: urlImage,
+                    url: urls[0]
+                }
+                formValuesToSend.urlMarca = {
+                    name: urlMarca,
+                    url: urls[1]
+                }
+
+                formValuesToSend.description = stringToArray(formValues.description);
+
+                setdataToSend(formValuesToSend);
+
+                dispatch(activeLente('id_temp', formValuesToSend));
+            }
+            )
         }
     }
 
-    const handleFileImageChange = (e) => {
+    const handleCloseModal = () => {
 
-        if (e.target.files[0]) {
-            const file = e.target.files[0];
-            setFileImage(file);
-        } else {
-            setFileImage(null)
-        }
-    }
+        setableButton(false)
+        dispatch(setShowHideModal(false))
+        dispatch(editingLente(false))
+        reset();
 
-    const handleFileMarcaChange = (e) => {
+    };
 
-        if (e.target.files[0]) {
-            const file = e.target.files[0];
-            setFileMarca(file);
-        } else {
-            setFileMarca(null)
-        }
-    }
+    const handleShowModal = () => {
+        dispatch(desactiveLente())
+        dispatch(setShowHideModal(true))
+
+    };
 
     useEffect(() => {
 
         if (active && resetForm) {
 
-            console.log(active.description);
             const stringDescription = arrayToString(active.description);
-            console.log(stringDescription);
 
             reset({
                 title: active.title,
+                lenteType: active.lenteType,
                 description: stringDescription,
                 precio: active.precio,
-                urlImage: '',
-                urlMarca: '',
-                proteccion: '',
+                urlImage: active.urlImage.name,
+                urlMarca: active.urlMarca.name,
+                proteccion: active.proteccion,
                 cir: active.cir,
                 esf: active.esf,
                 adc: active.adc
             })
+
             dispatch(resetFormLente(false))
         }
 
-
-    }, [active, reset, dispatch])
+    }, [active, reset, dispatch, resetForm])
 
     return (
         <>
-            <div className="row p-4">
-                <div className="col-6">
 
-                    <div className="row justify-content-center my-2 ">
-                        <div className="col-auto">
-                            <div className="card animate__animated animate__fadeInUp animate__faster">
-                                <div className="card-body">
+            <Button variant="primary" size="sm" className="mr-2" onClick={handleShowModal}>
+                <IconContext.Provider value={{ size: "1.5em" }}>
+                    <div>
+                        Añadir Lente <IoMdAddCircleOutline />
+                    </div>
+                </IconContext.Provider>
+            </Button>
 
-                                    {
-                                        (msgError) &&
-                                        (<span className="badge badge-danger w-100 mb-2">{msgError}</span>)
-                                    }
+            {/* <Button variant="primary" size="sm" className="mr-2" onClick={handleAddBaseDataLentes}>
+                <IconContext.Provider value={{ size: "1.5em" }}>
+                    <div>
+                        Borrar Lentes <RiDeleteBin5Line />
+                    </div>
+                </IconContext.Provider>
+            </Button>
 
-                                    <form onSubmit={handleSubmit} className="w-75 mx-auto" >
-                                        <h4 className="text-center p-2">Añadir Lente</h4>
-                                        <div className="form-group form-group-sm mx-auto w-100">
-                                            <input
-                                                type="text"
-                                                className="form-control form-control-sm mb-3"
-                                                placeholder="Titulo"
-                                                name="title"
-                                                value={title}
-                                                onChange={handleInputChange}
-                                            />
+            <Button variant="primary" size="sm" className="mr-2" onClick={handleAddBaseDataLentes}>
+                <IconContext.Provider value={{ size: "1.5em" }}>
+                    <div>
+                        Cargar Lentes <FaCloudUploadAlt />
+                    </div>
+                </IconContext.Provider>
+            </Button>
 
+            <Button variant="primary" size="sm" className="mr-2" onClick={handleAddBaseDataLentes}>
+                <IconContext.Provider value={{ size: "1.5em" }} >
+                    <div>
+                        Descargar Lentes <FaCloudDownloadAlt />
+                    </div>
+                </IconContext.Provider>
+            </Button> */}
 
-                                            <div className="form-group">
-                                                <div className="input-group input-group-sm mb-2">
-                                                    <div className="input-group-prepend ">
-                                                        <span className="input-group-text">$</span>
-                                                    </div>
+            <Modal
+                show={ModalShowHide}
+                onHide={handleCloseModal}
+                size="lg"
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>Agregar Lente</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row>
+                        <Col>
 
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm "
-                                                        placeholder="Precio"
-                                                        name="precio"
-                                                        value={precio}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                    <div className="input-group-append">
-                                                        <span className="input-group-text">.00</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <p>Imagen Lente: </p>
-                                            <input
-
-                                                className="form-control form-control-sm mb-3"
-                                                type="file"
-                                                id="formFile"
-                                                onChange={handleFileImageChange}
-                                                accept=".jpg, .jpeg, .png"
-                                            />
-                                            <p>Imagen Marca: </p>
-                                            <input
-
-                                                className="form-control form-control-sm mb-3"
-                                                type="file"
-                                                id="formFile"
-                                                onChange={handleFileMarcaChange}
-                                                accept=".jpg, .jpeg, .png"
-                                            />
-
-                                            <p>Formula: </p>
-                                            <div className="row g-3 mb-3">
-                                                <div className="col">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm"
-                                                        placeholder="Esfera"
-                                                        name="cir"
-                                                        onChange={handleInputChange}
-                                                        value={cir}
-
-                                                    />
-                                                </div>
-                                                <div className="col">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm"
-                                                        placeholder="Circulo"
-                                                        name="esf"
-                                                        onChange={handleInputChange}
-                                                        value={esf}
-
-                                                    />
-                                                </div>
-                                                <div className="col">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm"
-                                                        placeholder="Adicion"
-                                                        name="adc"
-                                                        onChange={handleInputChange}
-                                                        value={adc}
-
-                                                    />
-                                                </div>
-
-                                            </div>
-
-                                            <div className="form-group">
-                                                <select
-                                                    className="custom-select"
-                                                    name="proteccion"
-                                                    value={proteccion}
-                                                    onChange={handleInputChange}
-                                                >
-                                                    <option value="sinProteccion" defaultValue="sinProteccion">Sin proteccion</option>
-                                                    <option value="blancos">Blancos</option>
-                                                    <option value="proteccionAzul">Proteccion Luz Azul</option>
-                                                    <option value="fotosensibles">Fotosensibles</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="input-group mb-3">
-                                                <textarea
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    placeholder="Caracteristicas separadas por (,)"
-                                                    name="description"
-                                                    value={description}
-                                                    onChange={handleInputChange}
-
-                                                />
-
-                                            </div>
-
-                                            <span
-                                                className="btn btn-primary d-block w-100 mb-2 mx-auto"
-                                                onClick={handlePreview}
-                                            > Vista Previa </span>
-                                            <button className="btn btn-primary d-block w-100 mx-auto"> Añadir </button>
-
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div >
-                </div>
+                            <Form className="w-75 mx-auto" >
 
 
-                <div className="col-6">
+                                <FormGroup>
+                                    <Form.Label>Tipo de Lente</Form.Label>
+                                    <FormControl
+                                        as='select'
+                                        size="sm"
+                                        onChange={handleInputChange}
+                                        name="lenteType"
+                                        value={lenteType}
+                                    >
+
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Monofocales">Monofocal</option>
+                                        <option value="Bifocales">Bifocal</option>
+                                        <option value="Ocupacionales">Ocupacional</option>
+                                        <option value="Progresivos">Progresivo</option>
 
 
-                    <div className="row justify-content-center my-5 ">
-                        <div className="col-auto">
 
-                            <div className="card p-3 animate__animated animate__fadeInUp animate__faster">
-                                <h4 className="text-center p-2">Vista Previa</h4>
+                                    </FormControl>
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <FormControl
+                                        size="sm"
+                                        type="text"
+                                        placeholder="Titulo"
+                                        name="title"
+                                        value={title}
+                                        onChange={handleInputChange}
+                                    />
+                                </FormGroup>
+
+                                <FormGroup >
+
+                                    <InputGroup size="sm">
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text>
+                                                $
+                                                    </InputGroup.Text>
+                                        </InputGroup.Prepend>
+
+                                        <FormControl
+                                            type="text"
+                                            placeholder="Precio"
+                                            name="precio"
+                                            value={precio}
+                                            onChange={handleInputChange}
+                                        />
+                                        <InputGroup.Append>
+                                            <InputGroup.Text>
+                                                .00
+                                                </InputGroup.Text>
+                                        </InputGroup.Append>
+
+                                    </InputGroup>
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <Form.Label>Color de Lente</Form.Label>
+                                    <FormControl
+                                        as="select"
+                                        onChange={handleInputChange}
+                                        size="sm"
+                                        name="urlImage"
+                                        value={urlImage}
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        <option value="lenteBlanco">Blanco</option>
+                                        <option value="verdeAzulado">Verde Azulado</option>
+
+
+                                    </FormControl>
+
+                                </FormGroup>
+                                <FormGroup>
+                                    <Form.Label>Marca</Form.Label>
+                                    <FormControl
+                                        as="select"
+                                        onChange={handleInputChange}
+                                        size="sm"
+                                        name="urlMarca"
+                                        value={urlMarca}
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        <option value="lightSensor_logo">LightSensor</option>
+                                        <option value="iFree_logo">iFree</option>
+                                        <option value="iFreeBlue_logo">IFreeBlue</option>
+                                        <option value="blueSage_logo">BlueSafe</option>
+                                        <option value="Superfelex_logo">SuperFlex</option>
+
+
+                                    </FormControl>
+
+                                </FormGroup>
+
+                                <Form.Row className="mb-3">
+
+                                    <Col>
+                                        <FormControl
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            placeholder="Esfera"
+                                            name="cir"
+                                            onChange={handleInputChange}
+                                            value={cir}>
+                                        </FormControl>
+                                    </Col>
+
+                                    <Col>
+                                        <FormControl
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            placeholder="Circulo"
+                                            name="esf"
+                                            onChange={handleInputChange}
+                                            value={esf}
+
+                                        />
+                                    </Col>
+
+
+                                    <Col>
+                                        <FormControl
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            placeholder="Adicion"
+                                            name="adc"
+                                            onChange={handleInputChange}
+                                            value={adc}
+                                        />
+                                    </Col>
+
+                                </Form.Row>
+
+                                <FormGroup>
+                                    <Form.Label>Tipo de Proteccion</Form.Label>
+                                    <FormControl
+                                        as="select"
+                                        value={proteccion}
+                                        onChange={handleInputChange}
+                                        size="sm"
+                                        name="proteccion"
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Blancos">Blancos</option>
+                                        <option value="Luz Azul">Luz Azul</option>
+                                        <option value="Fotosensibles">Fotosensibles</option>
+                                        <option value="Fotosensibles y Luz Azul">Fotosensibles y Luz Azul</option>
+
+
+                                    </FormControl>
+
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <FormControl as="textarea"
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        placeholder="Caracteristicas separadas por (,)"
+                                        name="description"
+                                        value={description}
+                                        onChange={handleInputChange}
+                                    />
+                                </FormGroup>
 
                                 {
-                                    (active)
-                                        ? (<PreviewLente {...{ ...formValues, fileImage, fileMarca }} />)
-                                        : (<PreviewLenteNothing />)
+                                    (msgError) &&
+                                    (<Badge pill variant="danger" className="d-block mx-auto mb-2">{msgError}</Badge>)
                                 }
 
+                                <span
+                                    className="btn btn-primary d-block w-100 mb-2 mx-auto"
+                                    onClick={handlePreview}
+                                > Vista Previa </span>
+                            </Form>
 
-                            </div>
+                        </Col>
+                        <Col>
 
+                            {
+                                (active)
+                                    ? (<PreviewLente {...{ ...formValues, handlePreview }} />)
+                                    : (<PreviewLenteNothing />)
+                            }
+                        </Col>
+                    </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleSubmit} disabled={!ableButton}>
+                        {
+                            (idEditing) ? `Actualizar Lente` : `Añadir Lente`
+                        }
+                    </Button>
+                    <Button variant="primary" onClick={handleCloseModal}>
+                        Cancelar
+                     </Button>
+                </Modal.Footer>
+            </Modal>
 
-
-                        </div>
-                    </div>
-
-
-                </div>
-
-            </div>
 
 
         </>

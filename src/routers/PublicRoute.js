@@ -2,11 +2,7 @@ import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
 
-export const PublicRoute = ({
-    isAutenticated,
-    component: Component,
-    ...rest
-}) => {
+export const PublicRoute = ({ isAutenticated, component: Component, ...rest }) => {
 
     return (
         <Route {...rest}

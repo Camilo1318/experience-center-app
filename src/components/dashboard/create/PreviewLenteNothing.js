@@ -5,7 +5,7 @@ export const PreviewLenteNothing = () => {
     return (
         <>
             <div className="col mb-4">
-                <div className="card text-center shadow border-light" style={{ minWidth: 250 }}>
+                <div className="card text-center shadow border-light" style={{ width: 240 }}>
                     <h6 className="card-header"><strong>Titulo del Lente</strong></h6>
                     <h2>{ }</h2>
 
@@ -41,7 +41,6 @@ export const PreviewLenteNothing = () => {
 
                     </div>
                 </div>
-
             </div>
         </>
     )

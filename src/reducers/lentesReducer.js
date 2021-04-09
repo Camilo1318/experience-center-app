@@ -4,7 +4,7 @@ import { types } from '../types/types'
 const initialState = {
     lentes: [],
     active: null,
-    editing: false
+    idEditing: ''
 }
 
 export const lentesReducer = (state = initialState, action) => {
@@ -38,11 +38,17 @@ export const lentesReducer = (state = initialState, action) => {
                 active: null,
                 lentes: [...action.payload]
             }
+        case types.lentesDeleteAllLentes:
+            return {
+                ...state,
+                lentes: []
+            }
+
         case types.lentesEditing:
 
             return {
                 ...state,
-                editing: action.payload
+                idEditing: action.payload
             }
         default:
             return state;
